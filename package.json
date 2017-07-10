@@ -1,0 +1,18 @@
+{
+  "name": "voice-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nnaemeka Okoroafor",
+  "license": "ISC",
+  "dependencies": {
+    "ari-client": "^1.1.1",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mysql2": "^1.3.5",
+    "sequelize": "^4.2.1"
+  }
+}

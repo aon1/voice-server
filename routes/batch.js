@@ -7,7 +7,6 @@ var models = require('../models/index');
 var Batch = models.Batch;
 var Contact = models.Contact;
 const csv = require('csvtojson');
-var schedule = require('node-schedule');
 var batchComponent = require('../components/batch_component')
 
 function createContact(contacts, batch) {
@@ -46,12 +45,6 @@ router.post('', upload.single('file'), function (request, res, next) {
                         console.log(err);
                         res.status(500).json(err)
                     } else {
-                        console.log(batchComponent);
-                        var j = schedule.scheduleJob(batch.scheduledDate, function (batchInstance) {
-                            console.log("Running job");
-                            batchComponent.process(batchInstance);
-                        }.bind(null, batch));
-                        console.log(j);
                         res.status(200).json(created)
                     }
                 }).catch(function (err) {
@@ -80,5 +73,28 @@ router.get('', function (request, res, next) {
         })
 
 })
+
+router.put('/initiate/:batchId', function (request, res, next) {
+    var batchId = request.params.batchId;
+    Batch.findOne({ where: { id: batchId } })
+        .then(batch => {
+            batchComponent.process(batch);
+            batch.status = 'PROCESSING';
+            batch.save()
+                .then((created, err) => {
+                    res.status(200).json();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    res.status(500).json(err)
+                });
+
+
+        }).catch(function (err) {
+            console.log(err);
+            res.status(500).json(err)
+        })
+})
+
 
 module.exports = router;

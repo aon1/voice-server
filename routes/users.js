@@ -23,18 +23,16 @@ router.post('', function (request, res, next) {
 
 router.get('', function (request, res, next) {
 
-    User.findAll()
-        .then((users, err) => {
-            if (err) {
-                res.status(500).json(err)
-            } else {
-                res.status(200).json(users)
-            }
-        })
-        .catch(function(err){
-            console.log(err);
+    User.findAll().then((users, err) => {
+        if (err) {
             res.status(500).json(err)
-        })
+        } else {
+            res.status(200).json(users)
+        }
+    }).catch(function (err) {
+        console.log(err);
+        res.status(500).json(err)
+    })
 
 })
 

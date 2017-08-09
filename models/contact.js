@@ -54,6 +54,12 @@ module.exports = function (sequelize, DataTypes) {
       onUpdate: 'cascade',
       onDelete: 'cascade'
     },
+    status: {
+      type: DataTypes.STRING,
+      field: 'status',
+      defaultValue: 'PENDING',
+      allowNull: false
+    }
   }, {
       classMethods: {
         associate: function (models) {

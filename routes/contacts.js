@@ -32,9 +32,9 @@ router.post('', function (request, res, next) {
 
 });
 
-router.get('', function (request, res, next) {
-
-    Contact.findAll()
+router.get('/batch/:batchId', function (request, res, next) {
+    var batchId = request.params.batchId;
+    Contact.findAll({ where: { batchId: batchId } })
         .then((contacts, err) => {
             if (err) {
                 res.status(500).json(err)
@@ -48,13 +48,5 @@ router.get('', function (request, res, next) {
         })
 
 })
-
-router.post('/call', function (request, res, next) {
-    console.log(request.params);
-    client.createChannel();
-
-    res.status(200).json({ "status": "ok" });
-
-});
 
 module.exports = router;

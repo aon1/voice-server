@@ -9,21 +9,28 @@ function BatchComponent () {
 }
 
 BatchComponent.prototype.process = function (batch) {
-    var contacts = Contact.findAll({
-        where: {
-            batchId: batch.id
-        }
-    }).then((batches, err) => {
-        if (err) {
-            res.status(500).json(err)
-        } else {
-            res.status(200).json(batches)
-        }
-    }).catch(function (err) {
-        console.log(err);
-        res.status(500).json(err)
-    });
+    return new Promise(function (resolve, reject) {
+        var contacts = Contact.findAll({
+            where: {
+                batchId: batch.id
+            }
+        }).then((contacts, err) => {
+            if (err) {
+                console.log("Error retrieving contacts for batch");
+                reject(err);
+            } else {
+                contacts.forEach(function (contact) {
+                    
+                    client.createChannel(contact);
+                });
+                resolve(contacts);
+            }
+        }).catch(function (err) {
+            console.log(err);
+            reject(err);
 
-    console.log(contacts);
+        });
+
+    });  
 }
 module.exports = new BatchComponent();

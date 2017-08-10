@@ -21,7 +21,8 @@ router.post('', upload.single('file'), function (request, res, next) {
     console.log(request.file);
     var batchMedia = BatchMedia.build(request.body);
     batchMedia.filename = request.file.filename;
-    media.upload(request.file.path);
+    media.upload(request.file.filename);
+    console.log(request.file.path);
     batchMedia.save()
         .then((created, err) => {
             if (err) {

@@ -1,5 +1,6 @@
 var client = require('ari-client');
 var models = require('../models/index');
+let path = require('path');
 var Batch = models.Batch;
 var Contact = models.Contact;
 var CallDetail = models.CallDetail;
@@ -17,17 +18,18 @@ client.connect('http://192.168.56.2:8088', 'asterisk', 'password')
     });
 
 
-client.createChannel = function (contact) {
+client.createChannel = function (contact, batchMedia) {
     //console.log(ariInstance);
     //endpoint = 'PJSIP/6001'
     var endpoint = "PJSIP/" + contact.phoneNumber;
-    console.log(endpoint);
+    var mediaFile = path.basename(batchMedia.filename, '.gsm');
+    var media = 'sound:' + mediaFile;
+    console.log(mediaFile);
     if (contact.status !== "COMPLETE") {
         ariInstance.channels.create({ endpoint: endpoint, app: 'hello-world', appArgs: 'dialed' })
             .then(function (channel) {
                 CallDetail.create({
-                    contactId: contact.id,
-                    timeStarted: new Date()
+                    contactId: contact.id
                 }).then((callDetail) => {
                     console.log("Created channel");
                     console.log(channel.id);
@@ -50,12 +52,12 @@ client.createChannel = function (contact) {
                     channel.on('ChannelStateChange', function (event, channel) {
                         console.log("Channel state changed");
                         if (event.channel.state === 'Up') {
-
-
+                            callDetail.timeStarted = new Date();
+                            callDetail.save();
                             console.log("Channel is up");
                             ariInstance.channels.play({
                                 channelId: event.channel.id,
-                                media: 'sound:voice-example'
+                                media: media
                             }).then(function (playback) {
                                 playback.on('PlaybackFinished', function (event, playback) {
                                     console.log("Playback finished");

@@ -6,6 +6,7 @@ var upload = multer({ dest: 'uploads/' })
 var models = require('../models/index');
 var Batch = models.Batch;
 var Contact = models.Contact;
+var BatchMedia = models.BatchMedia;
 const csv = require('csvtojson');
 var batchComponent = require('../components/batch_component')
 
@@ -78,16 +79,20 @@ router.put('/initiate/:batchId', function (request, res, next) {
     var batchId = request.params.batchId;
     Batch.findOne({ where: { id: batchId } })
         .then(batch => {
-            batchComponent.process(batch);
-            batch.status = 'PROCESSING';
-            batch.save()
-                .then((created, err) => {
+            BatchMedia.findOne({ where: { id: batchId } }).then(batchMedia => {
+                batchComponent.process(batch, batchMedia);
+                batch.status = 'PROCESSING';
+                batch.save().then((created, err) => {
                     res.status(200).json();
-                })
-                .catch(function (err) {
+                }).catch(function (err) {
                     console.log(err);
                     res.status(500).json(err)
                 });
+            }).catch(function (err) {
+                console.log(err);
+                res.status(500).json(err)
+            });
+
 
 
         }).catch(function (err) {

@@ -5,6 +5,8 @@ var users = require('./routes/users');
 var batch = require('./routes/batch');
 var batchMedia = require('./routes/batchmedia');
 var callDetail = require('./routes/calldetail');
+var path = require('path');
+global.appRoot = path.resolve(__dirname);
 
 app.use('/contacts', contacts);
 app.use('/users', users);

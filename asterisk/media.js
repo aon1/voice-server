@@ -1,5 +1,5 @@
 'use strict';
-
+let path = require('path');
 let Client = require('ssh2-sftp-client');
 let sftp = new Client();
 
@@ -17,7 +17,7 @@ Media.prototype.upload = function (filename) {
         username: 'emeka',
         password: 'noidea'
     }).then(() => {
-        sftp.put("C:/Users/emeka/Documents/example.gsm", "/var/lib/asterisk/sounds/example1.gsm").then(() => {
+        sftp.put(path.join(__dirname, "../uploads/", filename), "/var/lib/asterisk/sounds/" + filename).then(() => {
             console.log("Uploaded successfully");
         }).catch((err) => {
             console.log(err, 'catch error');

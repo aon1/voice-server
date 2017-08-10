@@ -8,7 +8,7 @@ function BatchComponent () {
 
 }
 
-BatchComponent.prototype.process = function (batch) {
+BatchComponent.prototype.process = function (batch, batchMedia) {
     return new Promise(function (resolve, reject) {
         var contacts = Contact.findAll({
             where: {
@@ -21,7 +21,7 @@ BatchComponent.prototype.process = function (batch) {
             } else {
                 contacts.forEach(function (contact) {
                     
-                    client.createChannel(contact);
+                    client.createChannel(contact,  batchMedia);
                 });
                 resolve(contacts);
             }

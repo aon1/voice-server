@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
         model: 'users',
@@ -23,27 +23,27 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
-      no_of_records: {
+      noOfRecords: {
         type: Sequelize.INTEGER
       },
       status: {
         type: Sequelize.STRING
       },
-      scheduled_date: {
+      scheduledDate: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('Batches');
+    return queryInterface.dropTable('batches');
   }
 };

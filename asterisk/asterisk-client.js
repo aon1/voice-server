@@ -4,17 +4,20 @@ let path = require('path');
 var Batch = models.Batch;
 var Contact = models.Contact;
 var CallDetail = models.CallDetail;
+var asteriskApp = 'voice-server';
+var settings = require('../config/asterisk-config');
 
 var ariInstance;
 var channelId;
-client.connect('http://192.168.56.2:8088', 'asterisk', 'password')
+client.connect(settings.ASTERISK_ARI_URL, settings.ASTERISK_ARI_USERNAME, settings.ASTERISK_ARI_PASSWORD)
     .then(function (ari) {
         ariInstance = ari;
-        ariInstance.start('hello-world');
+        ariInstance.start(asteriskApp);
         console.log("Created connection successfully")
     })
     .catch(function (err) {
         console.log(err);
+        throw err;
     });
 
 
@@ -26,7 +29,7 @@ client.createChannel = function (contact, batchMedia) {
     var media = 'sound:' + mediaFile;
     console.log(mediaFile);
     if (contact.status !== "COMPLETE") {
-        ariInstance.channels.create({ endpoint: endpoint, app: 'hello-world', appArgs: 'dialed' })
+        ariInstance.channels.create({ endpoint: endpoint, app: asteriskApp, appArgs: 'dialed' })
             .then(function (channel) {
                 CallDetail.create({
                     contactId: contact.id
@@ -46,7 +49,12 @@ client.createChannel = function (contact, batchMedia) {
                     channel.on('ChannelDtmfReceived', function (event, channel) {
                         console.log("Dtmf received");
                         console.log(event);
-                        callDetail.dtmf = event.digit;
+                        if (callDetail.dtmf == null || callDetail.dtmf == undefined) {
+                            callDetail.dtmf = event.digit;
+                        } else {
+                            callDetail.dtmf = callDetail.dtmf + "," + event.digit;
+                        }
+
                         callDetail.save();
                     });
                     channel.on('ChannelStateChange', function (event, channel) {

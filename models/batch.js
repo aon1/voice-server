@@ -33,7 +33,6 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     }
   }, {
-      underscored: true,
       tableName: 'batches',
       freezeTableName: true,
       classMethods: {

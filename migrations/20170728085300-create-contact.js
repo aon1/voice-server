@@ -8,24 +8,24 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
+      userId: {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      first_name: {
+      firstName: {
         type: Sequelize.STRING
       },
-      last_name: {
+      lastName: {
         type: Sequelize.STRING
       },
-      phone_number: {
+      phoneNumber: {
         allowNull: false,
         type: Sequelize.STRING
       },
       email: {
         type: Sequelize.STRING
       },
-      batch_id: {
+      batchId: {
         allowNull: true,
         type: Sequelize.INTEGER,
         references: {
@@ -38,11 +38,11 @@ module.exports = {
       status: {
         type: Sequelize.STRING
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }

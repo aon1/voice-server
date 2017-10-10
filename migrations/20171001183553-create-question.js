@@ -1,24 +1,33 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('batch_media', {
+    return queryInterface.createTable('questions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      batch_id: {
+      questionText: {
+        type: Sequelize.STRING
+      },
+      mediaFile: {
+        type: Sequelize.STRING
+      },
+      surveyId: {
         type: Sequelize.INTEGER,
         references: {
-        model: 'batches',
+        model: 'surveys',
         key: 'id'
       },
       onUpdate: 'cascade',
       onDelete: 'cascade'
       },
-      filename: {
+      description: {
         type: Sequelize.STRING
+      },
+      order: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -31,6 +40,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('batch_media');
+    return queryInterface.dropTable('questions');
   }
 };

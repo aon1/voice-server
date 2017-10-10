@@ -8,7 +8,6 @@ module.exports = function (sequelize, DataTypes) {
   }, {
       tableName: 'call_details',
       freezeTableName: true,
-      underscored: true,
       classMethods: {
         associate: function (models) {
           // associations can be defined here

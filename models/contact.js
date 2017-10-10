@@ -67,7 +67,6 @@ module.exports = function (sequelize, DataTypes) {
           Contact.belongsTo(model.User);
         }
       },
-      underscored: true,
       tableName: 'contacts',
       freezeTableName: true
     });

@@ -16,7 +16,6 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     }
   }, {
-      underscored: true,
       tableName: 'batch_media',
       classMethods: {
         associate: function (models) {

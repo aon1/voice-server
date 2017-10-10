@@ -1,23 +1,32 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('batch_media', {
+    return queryInterface.createTable('surveys', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      batch_id: {
+      name: {
+        type: Sequelize.STRING
+      },
+      description: {
+        type: Sequelize.STRING
+      },
+      userId: {
         type: Sequelize.INTEGER,
         references: {
-        model: 'batches',
+        model: 'users',
         key: 'id'
       },
       onUpdate: 'cascade',
       onDelete: 'cascade'
       },
-      filename: {
+      status: {
+        type: Sequelize.STRING
+      },
+      statusMessage: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -31,6 +40,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('batch_media');
+    return queryInterface.dropTable('surveys');
   }
 };

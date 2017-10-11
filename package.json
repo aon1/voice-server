@@ -20,10 +20,8 @@
     "ssh2-sftp-client": "^1.1.0"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
     "eslint": "^4.8.0",
-    "jasmine": "^2.8.0",
-    "mocha": "^3.5.3",
-    "sinon": "^3.3.0"
+    "eslint-plugin-jasmine": "^2.9.1",
+    "jasmine": "^2.8.0"
   }
 }

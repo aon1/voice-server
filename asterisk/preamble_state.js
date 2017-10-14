@@ -1,6 +1,7 @@
-var Event = require('./event');
+//var Event = require('./event');
 let logger = require('../config/logger');
-function PreambleState(client, channel, questions, stateMachine) {
+let path = require('path');
+function PreambleState(client, channel, questions, callDetail) {
     this.state_name = "preamble";
     this.enter = function () {
         let currentPlayback;
@@ -8,18 +9,45 @@ function PreambleState(client, channel, questions, stateMachine) {
         let soundsToPlay = [];
         let playback;
         logger.debug("Entering preamble state");
+        channel.on('StasisStart', function (event, channel) {
+            logger.debug("Stasis started:")
+        });
+        channel.on('ChannelStateChange', function (event) {
+            if (event.channel.state === 'Up') {
+                logger.debug("Channel changed to up:")
+                callDetail.timeStarted = new Date();
+                callDetail.save();
+                initializePlaybacks();
+            } else {
+                logger.debug("Channel changed to :", event.channel.state)
+            }
+        });
+        channel.on('StasisEnd', function (event) {
+            logger.debug("Stasis End on channel");
+            callDetail.timeEnded = new Date();
+            callDetail.save();
+        });
 
         channel.on("ChannelHangupRequest", onHangup);
-        client.on("PlaybackFinished", onPlaybackFinished);
+        channel.on("PlaybackFinished", onPlaybackFinished);
         channel.on("ChannelDtmfReceived", onDtmf);
-        initializePlaybacks();
+        client.ariInstance.channels.dial({
+            channelId: channel.id
+        }).then(function () {
+            logger.debug("Dialed the channel");
+        }).catch(function (err) {
+            logger.error(err);
+        });
+
 
         function initializePlaybacks() {
             currentPlayback = 0;
             questions.forEach(function (question) {
+                var mediaFile = path.basename(question.mediaFile, '.gsm');
+
                 soundsToPlay.push({
-                    'playback': client.Playback(),
-                    'media': 'sound:' + question.mediaFile
+                    'playback': client.ariInstance.Playback(),
+                    'media': 'sound:' + mediaFile
                 })
             }, this);
             startPlayBack();
@@ -28,13 +56,13 @@ function PreambleState(client, channel, questions, stateMachine) {
         function startPlayBack() {
             currentSound = soundsToPlay[currentPlayback];
             playback = currentSound['playback'];
-            channel.play({ media: currentSound['media'] }, playback);
+            client.ariInstance.channels.play({ channelId: channel.id, media: currentSound['media'], playbackId: playback.id });
         }
 
         function cleanup() {
             channel.removeListener('ChannelHangupRequest', onHangup);
             channel.removeListener('ChannelDtmfReceived', onDtmf);
-            client.removeListener('PlaybackFinished', onPlaybackFinished);
+            channel.removeListener('PlaybackFinished', onPlaybackFinished);
             if (playback) {
                 playback.stop();
             }
@@ -42,8 +70,10 @@ function PreambleState(client, channel, questions, stateMachine) {
 
         function onHangup(event, channel) {
             playback = null;
+            callDetail.timeEnded = new Date();
+            callDetail.save();
             cleanup();
-            stateMachine.change_state(Event.HANGUP);
+            //stateMachine.change_state(Event.HANGUP);
         }
 
         function onPlaybackFinished(event) {
@@ -53,7 +83,7 @@ function PreambleState(client, channel, questions, stateMachine) {
                 currentPlayback++;
                 if (currentPlayback === soundsToPlay.length) {
                     cleanup();
-                    stateMachine.change_state(Event.PLAYBACK_COMPLETE);
+                    //stateMachine.change_state(Event.PLAYBACK_COMPLETE);
                 } else {
                     startPlayBack();
                 }
@@ -65,19 +95,21 @@ function PreambleState(client, channel, questions, stateMachine) {
             currentPlayback++;
             if (currentPlayback === soundsToPlay.length) {
                 cleanup();
-                stateMachine.change_state(Event.PLAYBACK_COMPLETE);
+                //stateMachine.change_state(Event.PLAYBACK_COMPLETE);
             } else {
                 startPlayBack();
             }
         }
 
         function onDtmf(event, channel) {
+            logger.debug("Received dtmf");
             switch (event.digit) {
                 case '#':
                     cleanup();
-                    stateMachine.change_state(Event.DTMF_OCTOTHORPE);
+                    //stateMachine.change_state(Event.DTMF_OCTOTHORPE);
                     break;
                 default:
+                    playback.stop();
                     skipToNextSound();
                     break;
 

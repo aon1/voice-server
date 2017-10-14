@@ -8,7 +8,6 @@ module.exports = function (sequelize, DataTypes) {
     },
     userId: {
       type: DataTypes.INTEGER,
-      field: 'user_id',
       allowNull: false,
       validate: {
         notEmpty: true
@@ -16,21 +15,18 @@ module.exports = function (sequelize, DataTypes) {
     },
     firstName: {
       type: DataTypes.STRING,
-      field: 'first_name',
       validate: {
         notEmpty: true
       }
     },
     lastName: {
       type: DataTypes.STRING,
-      field: 'last_name',
       validate: {
         notEmpty: true
       }
     },
     phoneNumber: {
       type: DataTypes.STRING,
-      field: 'phone_number',
       allowNull: false,
       validate: {
         notEmpty: true
@@ -45,7 +41,6 @@ module.exports = function (sequelize, DataTypes) {
     },
     batchId: {
       type: DataTypes.INTEGER,
-      field: 'batch_id',
       allowNull: true,
       references: {
         model: 'batches',

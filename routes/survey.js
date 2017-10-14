@@ -84,3 +84,4 @@ router.post('/:id/question', upload.single('file'), function (request, res) {
 
 })
 
+module.exports = router;

@@ -22,7 +22,6 @@ module.exports = function (sequelize, DataTypes) {
       ).then(calldetails => {
         resolve(calldetails);
       }).catch(function (err) {
-        console.log(err);
         reject(err);
       })
     });

@@ -6,7 +6,7 @@ var upload = multer({ dest: 'uploads/' })
 var models = require('../models/index');
 var Batch = models.Batch;
 var Contact = models.Contact;
-var BatchMedia = models.BatchMedia;
+let Survey = models.Survey;
 const csv = require('csvtojson');
 var batchComponent = require('../components/batch_component');
 let logger = require('../config/logger');
@@ -25,7 +25,7 @@ function createContact(contacts, batch) {
     });
 }
 
-router.post('', upload.single('file'), function (request, res, next) {
+router.post('', upload.single('file'), function (request, res) {
 
     var batch = Batch.build(request.body);
     var file = request.file;
@@ -78,11 +78,11 @@ router.put('/initiate/:batchId', function (request, res) {
     var batchId = request.params.batchId;
     Batch.findOne({ where: { id: batchId } })
         .then(batch => {
-            BatchMedia.findOne({ where: { batchId: batchId } }).then(batchMedia => {
-                if (batch.status !== "PENDING") {
+            Survey.findOne({ where: { id: batch.surveyId } }).then(survey => {
+                if (survey == null || batch.status !== "PENDING") {
                     res.status(400).json(batch);
                 } else {
-                    batchComponent.process(batch, batchMedia);
+                    batchComponent.process(batch, survey);
                     batch.status = 'PROCESSING';
                     batch.save().then((created, err) => {
                         if (err) {

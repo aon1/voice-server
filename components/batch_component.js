@@ -4,7 +4,7 @@ let models = require('../models/index');
 let Contact = models.Contact;
 let CallDetail = models.CallDetail;
 let logger = require('../config/logger');
-let surveyComponent = require('survey_component');
+let surveyComponent = require('./survey_component');
 
 function BatchComponent() {
 
@@ -27,21 +27,22 @@ BatchComponent.prototype.process = function (batch, survey) {
                     }).then((callDetail) => {
                         client.createChannel(contact)
                             .then((channel) => {
-                                channel.on('ChannelStateChange', function (event) {
-                                    logger.debug("Channel changed to up:")
-                                    if (event.channel.state === 'Up') {
-                                        callDetail.timeStarted = new Date();
-                                        callDetail.save();
-                                        surveyComponent.process(client, channel, survey, callDetail);
-                                    }
-                                });
-                                channel.on('StasisEnd', function (event) {
-                                    logger.debug("Stasis End on channel");
-                                    callDetail.timeEnded = new Date();
-                                    callDetail.save();
-                                    contact.status = "COMPLETE";
-                                    contact.save();
-                                });
+                                surveyComponent.process(client, channel, survey, callDetail);
+                                // channel.on('ChannelStateChange', function (event) {
+                                //     logger.debug("Channel changed to up:")
+                                //     if (event.channel.state === 'Up') {
+                                //         callDetail.timeStarted = new Date();
+                                //         callDetail.save();
+                                        
+                                //     }
+                                // });
+                                // channel.on('StasisEnd', function (event) {
+                                //     logger.debug("Stasis End on channel");
+                                //     callDetail.timeEnded = new Date();
+                                //     callDetail.save();
+                                //     contact.status = "COMPLETE";
+                                //     contact.save();
+                                // });
 
                             });
                     });

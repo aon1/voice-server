@@ -3,7 +3,6 @@ module.exports = function (sequelize, DataTypes) {
   var Batch = sequelize.define('Batch', {
     userId: {
       type: DataTypes.INTEGER,
-      field: 'user_id',
       allowNull: false
     },
     name: {
@@ -18,7 +17,6 @@ module.exports = function (sequelize, DataTypes) {
     },
     noOfRecords: {
       type: DataTypes.STRING,
-      field: 'no_of_records',
       allowNull: false
     },
     status: {
@@ -29,7 +27,10 @@ module.exports = function (sequelize, DataTypes) {
     },
     scheduledDate: {
       type: DataTypes.DATE,
-      field: 'scheduled_date',
+      allowNull: false
+    },
+    surveyId: {
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {

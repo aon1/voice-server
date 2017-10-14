@@ -19,6 +19,7 @@ client.connect(settings.ASTERISK_ARI_URL, settings.ASTERISK_ARI_USERNAME, settin
 
 client.createChannel = function (contact) {
     var endpoint = "PJSIP/" + contact.phoneNumber;
+    client.ariInstance = ariInstance;
     return ariInstance.channels.create({ endpoint: endpoint, app: asteriskApp, appArgs: 'dialed' })
 }
 

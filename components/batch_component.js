@@ -27,23 +27,7 @@ BatchComponent.prototype.process = function (batch, survey) {
                     }).then((callDetail) => {
                         client.createChannel(contact)
                             .then((channel) => {
-                                surveyComponent.process(client, channel, survey, callDetail);
-                                // channel.on('ChannelStateChange', function (event) {
-                                //     logger.debug("Channel changed to up:")
-                                //     if (event.channel.state === 'Up') {
-                                //         callDetail.timeStarted = new Date();
-                                //         callDetail.save();
-                                        
-                                //     }
-                                // });
-                                // channel.on('StasisEnd', function (event) {
-                                //     logger.debug("Stasis End on channel");
-                                //     callDetail.timeEnded = new Date();
-                                //     callDetail.save();
-                                //     contact.status = "COMPLETE";
-                                //     contact.save();
-                                // });
-
+                                surveyComponent.process(client, channel, survey, callDetail, batch);
                             });
                     });
 

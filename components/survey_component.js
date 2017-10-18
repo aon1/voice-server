@@ -8,13 +8,13 @@ function SurveyComponent() {
 
 }
 
-SurveyComponent.prototype.process = function (client, channel, survey, callDetail) {
+SurveyComponent.prototype.process = function (client, channel, survey, callDetail, batch) {
     
     
     Question.findAll({
         where: { surveyId: survey.id },
     }).then((questions) => {
-        let preambleState = new PreambleState(client, channel, questions, callDetail);
+        let preambleState = new PreambleState(client, channel, questions, callDetail, survey, batch);
         preambleState.enter();
     })
 }

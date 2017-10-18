@@ -14,6 +14,12 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER
       },
+      contactId: {
+        type: Sequelize.INTEGER
+      },
+      batchId: {
+        type: Sequelize.INTEGER
+      },
       dtmf: {
         type: Sequelize.STRING
       },

@@ -22,7 +22,7 @@ let upload = multer({ storage: storage });
 
 let Survey = models.Survey;
 let Question = models.Question;
-
+let Answer = models.Answer;
 
 
 router.post('', bodyParser.json(), function (request, res) {
@@ -83,5 +83,16 @@ router.post('/:id/question', upload.single('file'), function (request, res) {
     )
 
 })
+
+router.get('/:id/batch/:batchId/answers', function (request, res) {
+    var surveyId = request.params.id;
+    var batchId = request.params.batchId;
+    Answer.findBySurveyIdBatchId(surveyId, batchId).then((answers) => {
+        res.status(200).json(answers)
+    }).catch(function (err) {
+        logger.error(err);
+        res.status(500).json(err);
+    });
+});
 
 module.exports = router;
